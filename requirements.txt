@@ -1,0 +1,4 @@
+kubernetes
+kafka-python
+requests
+textual
