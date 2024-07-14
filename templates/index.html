@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Web App</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.7.5/jsoneditor.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.7.5/jsoneditor.min.css" />
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #dcdcdc;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #2e2e2e;
+            border-radius: 5px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group select,
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: #dcdcdc;
+        }
+
+        .form-group button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .form-group button:hover {
+            background-color: #0056b3;
+        }
+
+        .response {
+            margin-top: 20px;
+        }
+
+        .response h2 {
+            margin-bottom: 10px;
+        }
+
+        pre {
+            background-color: #2e2e2e;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .json-container {
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #333;
+            color: #dcdcdc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Test Web App</h1>
+        <form id="endpointForm">
+            <div class="form-group">
+                <label for="endpointSelect">Select Endpoint</label>
+                <select id="endpointSelect">
+                    <option value="">Select an endpoint</option>
+                    {% for name, url in endpoints.items() %}
+                    <option value="{{ url }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="paramSelect">Select Parameter</label>
+                <select id="paramSelect">
+                    <option value="">Select a parameter</option>
+                    {% for name, id in params.items() %}
+                    <option value="{{ id }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="textInput">Enter Text</label>
+                <input type="text" id="textInput" placeholder="Enter some text">
+            </div>
+            <div class="form-group">
+                <button type="submit">Call Endpoint</button>
+            </div>
+        </form>
+        <div class="response">
+            <h2>Response:</h2>
+            <pre id="responseText" class="json-container"></pre>
+        </div>
+    </div>
+    <script>
+        document.getElementById('endpointForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const endpoint = document.getElementById('endpointSelect').value;
+            const param = document.getElementById('paramSelect').value;
+            const text = document.getElementById('textInput').value;
+
+            if (!endpoint) {
+                alert('Please select an endpoint.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/call_endpoints', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        endpoints: [{ endpoint: endpoint, param: param }]
+                    })
+                });
+                const result = await response.json();
+                document.getElementById('responseText').textContent = JSON.stringify(result, null, 2);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('responseText').textContent = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+
+</html>

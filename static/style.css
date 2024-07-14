@@ -1,0 +1,25 @@
+body {
+    background-color: #1e1e1e;
+    color: #dcdcdc;
+}
+
+h1, h2, h3 {
+    color: #ffffff;
+}
+
+textarea {
+    background-color: #2e2e2e;
+    color: #dcdcdc;
+    border: 1px solid #444;
+}
+
+button {
+    margin: 0 5px;
+}
+
+#json_display {
+    background-color: #2e2e2e;
+    color: #dcdcdc;
+    padding: 10px;
+    border: 1px solid #444;
+}
